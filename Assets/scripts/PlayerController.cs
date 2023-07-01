@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,10 +11,12 @@ public class PlayerController : MonoBehaviour
     public float jumpForce;
     bool canjump = true;
     bool isGrounded = false;
-    public GameManager gameManager;
+    public GameManager Manager;
     bool up;
-    bool side;
+    bool fside;
     bool down;
+    bool bside;
+    bool canMove = false;
 
     private void Awake()
     {
@@ -27,51 +30,95 @@ public class PlayerController : MonoBehaviour
     //update bools
     void boolUpdate()
     {
-        up = GetComponent<GameManager>().isOnTopside;
-        down = GetComponent<GameManager>().isOnUnderside;
-        side = GetComponent<GameManager>().isOnFrontside;
+        up = Manager.isOnTopside;
+        fside = Manager.isOnFrontside;
+        bside = Manager.isOnBackside;
+        down = Manager.isOnUnderside;
     }
 
     // Update is called once per frame
     void Update()
     {
+        canMove = true;
         canjump = isGrounded;
         boolUpdate();
         bool hldUp = up;
         bool hldDown = down;
-        bool hldSide = side;
-        if (Input.GetMouseButtonDown(0)) {
-            Vector3 directionalVector = up ? Vector3.up : side ? Vector3.right : Vector3.down;
+        bool hldFntSide = fside;
+        bool hldBckSide = bside;
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            if (up && canMove)
+            {
+                // code to move to one of the sides
+                hldFntSide = sidePicker(); hldBckSide = !hldFntSide; hldUp = false;
+                canMove = false;
+            }
+            else if ((fside || bside) && canMove)
+            {
+                // code to move to underside
+                hldFntSide = false; hldDown = true; hldBckSide = false; hldUp = false;
+                canMove = false;
+            } else if (down)
+            { if (canjump) { rb.AddForce(Vector3.down * jumpForce, ForceMode.Impulse); } }
+        }
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            if ((fside || bside) && canMove)
+            {
+                // code to move to topside
+                hldUp = true; hldFntSide = false; hldBckSide = false;
+                canMove = false;
+            }
+            if (down && canMove)
+            {
+                // code to move to one of the sides
+                hldDown = false; hldFntSide = sidePicker(); hldBckSide = !hldFntSide;
+                canMove = false;
+            } else if (hldUp) { if (canjump) { rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse); } }
+        }
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            if ((up || down) && canMove)
+            {
+                // Code to move to the backside
+                hldFntSide = false; hldDown = false; hldBckSide = true; hldUp = false;
+                canMove = false;
+            }
+            if (fside && canMove)
+            {
+                // Code to move to the top side or bottom side
+                hldUp = sidePicker(); hldDown = !hldUp; hldFntSide = false; hldBckSide=false;
+                canMove = false;
+            }
+            if (bside) { if (canjump) { rb.AddForce(Vector3.left * jumpForce, ForceMode.Impulse); } }
+        }
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            if ((up || down) && canMove)
+            {
+                // Code to move to the frontside
+                hldFntSide = true; hldDown = false; hldBckSide = false; hldUp = false;
+                canMove = false;
+            }
+            if (bside && canMove)
+            {
+                // Code to move to the top side or bottom side
+                hldUp = sidePicker(); hldDown = !hldUp; hldFntSide = false; hldBckSide = false;
+                canMove = false;
+            }
+            if (fside) { if (canjump) { rb.AddForce(Vector3.right * jumpForce, ForceMode.Impulse); } }
+        }
+        Vector3 directionalVector = hldUp ? Vector3.up : hldFntSide ? Vector3.right : hldDown ? Vector3.down : Vector3.left;
+        if (hldUp != up ||  hldDown != down || hldFntSide != fside || hldBckSide != bside) { Manager.toggleSides(hldUp, hldFntSide, hldBckSide, hldDown); } else if (Input.GetMouseButtonDown(0))
+        {
             // jump
             if (canjump) { rb.AddForce(directionalVector * jumpForce, ForceMode.Impulse); }
         }
-        if (Input.GetKeyDown(KeyCode.DownArrow) && !down)
-        {
-            if (up)
-            {
-                // code to move to front side
-                side = true; up = false;
-            }
-            else if (side) 
-            { 
-                // code to move to underside
-                side = false; down = true;
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.UpArrow) && !up)
-        {
-            if (side)
-            {
-                // code to move to topside
-                up = true; side = false;
-            }
-            if (down)
-            {
-                // code to move to front side
-                down = false; side = true;
-            }
-        }
-        if (hldUp != up ||  hldDown != down || hldSide != side) { GetComponent<GameManager>().toggleSides(up, down, side); }
+    }
+    private bool sidePicker()
+    {
+        return UnityEngine.Random.Range(0, 20) < 10 ? true : false;
     }
     private void OnCollisionEnter(Collision collision)
     {

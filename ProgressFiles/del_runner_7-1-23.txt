@@ -1,0 +1,21 @@
+Sorted Side switching
+Sorted Gravity
+Sorted Arrow Controlls
+
+To Add
+- Skyboxish
+- Round Ball
+- Score Table of some kind
+- Second Bar
+-- Switching between Bars
+-- Position & Gravity Control For between bars
+
+Work on
+- Material Textures
+- Sounds
+- Further UI
+- Replace barrier with something
+-- Thorny bushy?
+-- Fire ?
+- Stylize
+- Change Spawnpoints to just use one & manipulate the position.
