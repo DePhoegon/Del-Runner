@@ -1,0 +1,16 @@
+Started up
+- Tutorialized intro to mechanics & methods
+- Frequent pausing to double check things.
+
+Multiple Restarts
+
+Multiple Unity Hangs on Busy importing status.
+
+Building Wanted features in head.
+
+Prep for multi axis play
+
+Trim Github to own code only
+---
+
+Restart Several times to File corruption.

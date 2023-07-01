@@ -1,0 +1,17 @@
+# AutoGens
+Library
+obj\Debug
+Logs
+UserSettings
+TextMesh Pro
+
+# Tools
+.git
+.vs
+
+# Files
+*-lock.*
+*.cache
+*.lock
+*TMP*
+*.meta
