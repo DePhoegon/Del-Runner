@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     bool down;
     bool bside;
     bool canMove = false;
+    bool topRail;
 
     private void Awake()
     {
@@ -30,10 +31,11 @@ public class PlayerController : MonoBehaviour
     //update bools
     void boolUpdate()
     {
-        up = Manager.isOnTopside;
-        fside = Manager.isOnFrontside;
-        bside = Manager.isOnBackside;
-        down = Manager.isOnUnderside;
+        up = Manager.topSideReturn();
+        fside = Manager.frontSideReturn();
+        bside = Manager.backSideReturn();
+        down = Manager.underSideReturn();
+        topRail = Manager.topRailReturn();
     }
 
     // Update is called once per frame
@@ -60,7 +62,10 @@ public class PlayerController : MonoBehaviour
                 hldFntSide = false; hldDown = true; hldBckSide = false; hldUp = false;
                 canMove = false;
             } else if (down)
-            { if (canjump) { rb.AddForce(Vector3.down * jumpForce, ForceMode.Impulse); } }
+            { 
+                if (canjump) { rb.AddForce(Vector3.down * jumpForce, ForceMode.Impulse); }
+                else { if (topRail) Manager.toggleSides(true, false, false, false, false); }
+            }
         }
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
@@ -75,7 +80,10 @@ public class PlayerController : MonoBehaviour
                 // code to move to one of the sides
                 hldDown = false; hldFntSide = sidePicker(); hldBckSide = !hldFntSide;
                 canMove = false;
-            } else if (hldUp) { if (canjump) { rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse); } }
+            } else if (hldUp) { 
+                if (canjump) { rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse); } 
+                else { if (!topRail) Manager.toggleSides(false, false, false, true, true); }
+            }
         }
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {

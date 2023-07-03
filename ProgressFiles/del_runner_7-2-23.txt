@@ -1,0 +1,36 @@
+Added in Decorations
+- Buildings on random rotation
+- road w/ white stripes
+- ground
+- barriers twists
+
+Tweaks
+- Scoring updated
+-- Now counts barriers passed
+- angled rotation for barriers
+
+ToDo
+- set barrier to use alternate placement adjustments on rotated barriers
+
+Updated
+- Materials
+-- Names
+-- Colors
+- C# Scripts
+-- Player Controller
+-- Game Manager
+-- Obstical
+- Tags
+- Initial Objects in view
+- Prefab
+-- Barrier
+- Shadows
+
+Added
+- C# scripts
+-- scenery
+-- scoreLine
+- Prefabs
+-- Building
+-- Tall building
+-- whiteLine
