@@ -1,11 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
-using Unity.VisualScripting;
-using System.Threading;
-using UnityEngine.UIElements;
-using System;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,6 +8,7 @@ public class GameManager : MonoBehaviour
     public Transform BottomRail;
     public Transform TopRail;
     public GameObject playButton;
+    public GameObject arrowPad;
     public GameObject player;
     public GameObject scoreLine;
     public Rigidbody playerbody;
@@ -23,18 +18,8 @@ public class GameManager : MonoBehaviour
     private bool isOnTopside;
     private bool isOnBackside;
     private bool isOnTopRail;
+    private bool isTwisted = false;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
     public bool topSideReturn() { return isOnTopside; }
     public bool frontSideReturn() { return isOnFrontside; }
     public bool backSideReturn() { return isOnBackside; }
@@ -84,12 +69,14 @@ public class GameManager : MonoBehaviour
         float spYb = rail.position.y;
         float spZ = NeutralSpawnPoint.position.z;
         float x, y, z;
+        isTwisted = UnityEngine.Random.Range(0, 20) > 15;
+        float offset = isTwisted ? 1.3f : 0.76f;
         switch (UnityEngine.Random.Range(0, 9))
         {
-            case 1: x = spXb; y = spYb + 0.76f; z = spZ; break;
-            case 2: x = spXb + 0.76f; y = spYb; z = spZ; break;
-            case 3: x = spXb; y = spYb - 0.76f; z = spZ; break;
-            case 4: x = spXb - 0.76f; y = spYb; z = spZ; break;
+            case 1: x = spXb; y = spYb + offset; z = spZ; break;
+            case 2: x = spXb + offset; y = spYb; z = spZ; break;
+            case 3: x = spXb; y = spYb - offset; z = spZ; break;
+            case 4: x = spXb - offset; y = spYb; z = spZ; break;
             default: x = spXb; y = spYb; z = spZ; break;
         }
         return new Vector3(x, y, z);
@@ -101,10 +88,10 @@ public class GameManager : MonoBehaviour
         {
             float waitTime = UnityEngine.Random.Range(0.2f, 1f);
             yield return new WaitForSeconds(waitTime);
-            Quaternion rotation = UnityEngine.Random.Range(0, 20) < 15 ? Quaternion.identity : Quaternion.AngleAxis(45, Vector3.back);
+            Quaternion rotation = isTwisted ? Quaternion.identity : Quaternion.AngleAxis(45, Vector3.back);
             Instantiate(barrier, spawnPointShuffle(BottomRail), rotation);
             yield return new WaitForSeconds(waitTime);
-            rotation = UnityEngine.Random.Range(0, 20) < 15 ? Quaternion.identity : Quaternion.AngleAxis(45, Vector3.back);
+            rotation = isTwisted ? Quaternion.identity : Quaternion.AngleAxis(45, Vector3.back);
             Instantiate(barrier, spawnPointShuffle(TopRail), rotation);
         }
     }
@@ -113,6 +100,7 @@ public class GameManager : MonoBehaviour
     {
         player.SetActive(true);
         playButton.SetActive(false);
+        arrowPad.SetActive(true);
         toggleSides(true, false, false, false, false);
         StartCoroutine("SpawnBarriers");
         // InvokeRepeating("scoreUp", 2f, 1f);

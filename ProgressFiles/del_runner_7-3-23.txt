@@ -1,0 +1,21 @@
+Settled on
+- Controlls
+-- Arrow Keys + space bar
+-- swipe controls
+-- Arrow on screen Pad 
+== up, down, left, right, jump
+
+To Work on
+- Art for Arrows & jumps.
+- Ground decoration
+-- Randomized x, z placements
+-- move forward with road.
+- Further back stuff
+-- Moves slower
+- clouds
+-- moves slower
+
+Adjustments
+- Slight adjustments fitting a 16:10 tall ratio
+- Road lowered to not seem off
+- working on making scripts more reusable

@@ -1,0 +1,12 @@
++x, -y - bottom front
+
++x, +y - top front
+
+-x, +y - bottom front
+
++x - backside
+-x - frontside
++y - bottomside
+-y - topside
+
+- 45' Angle 
