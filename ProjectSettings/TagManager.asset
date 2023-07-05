@@ -9,7 +9,9 @@ TagManager:
   - ScoreCounter
   - wline
   - bline
-  - Building
+  - building
+  - trees
+  - dirt
   layers:
   - Default
   - TransparentFX

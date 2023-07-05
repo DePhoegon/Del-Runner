@@ -1,0 +1,43 @@
+Changes
+- removed Trees for dirt mounds
+- flushed out manual respawner
+- Tags swapped from static typed to pulled from Objects
+- Moved away from OnInvisible() 
+-- using object with transparent material to manage destroying & passing in the clone command
+- Use of Vector3.up (.right, .left, .down) instead of new vectors 
+- Moved Spawning/Respawning Objects into the calls within the Object Mover scripte
+
+ToDo
+- clouds
+- follow up with course
+
+-----------
+2nd Round
+Actions
+- Tested on various Screen rations (via device emulation)
+
+Added
+- Ball Player
+-- Spinning Ball
+-- Special Texture for Ball
+
+Changed
+- Ground Bars
+-- Semi-See through to show buildings & allow light emissions to give off an effect.
+- added control for spinAxis 
+
+Fixed 
+- Rotation & axis Locks
+-- may Spin weird, but will stay where intended to stay & rotate on the right enough axis
+- Added More background for more squarish displays like tablets
+-- Road Extended
+-- Lines extended
+--- Location of prefab moved
+-- Buildings added
+--- Location of Prefab Moved
+- Moved PlayPad Onscreen buttons to suit all displays
+- Moved Score down to suit all displays
+
+ToDo
+- Still Clouds
+- Still Folowup with Course

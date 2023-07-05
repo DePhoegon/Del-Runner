@@ -119,4 +119,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 15
-  manager: {fileID: 0}
+  objectPrefab: {fileID: 9076181993746108664}
+  enableRespawn: 1

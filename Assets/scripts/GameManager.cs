@@ -1,9 +1,15 @@
+using System;
 using System.Collections;
+using System.Numerics;
+using Unity.VisualScripting;
 using UnityEngine;
+using Quaternion = UnityEngine.Quaternion;
+using Vector3 = UnityEngine.Vector3;
 
 public class GameManager : MonoBehaviour
 {
     public GameObject barrier;
+    public ObjectMover barrierRespawn;
     public Transform NeutralSpawnPoint;
     public Transform BottomRail;
     public Transform TopRail;
@@ -13,13 +19,21 @@ public class GameManager : MonoBehaviour
     public GameObject scoreLine;
     public Rigidbody playerbody;
     public int physicsForce;
+    public float spinPerUpdate;
+    public bool spinPlayer;
     private bool isOnUnderside;
     private bool isOnFrontside;
     private bool isOnTopside;
     private bool isOnBackside;
     private bool isOnTopRail;
     private bool isTwisted = false;
+    private Vector3 spinAxis;
 
+
+    private void Update()
+    {
+        if (spinPlayer) { player.transform.Rotate(spinPerUpdate * spinAxis.x, spinPerUpdate * spinAxis.y, spinPerUpdate * spinAxis.z); }
+    }
     public bool topSideReturn() { return isOnTopside; }
     public bool frontSideReturn() { return isOnFrontside; }
     public bool backSideReturn() { return isOnBackside; }
@@ -29,38 +43,43 @@ public class GameManager : MonoBehaviour
         isOnTopRail = topRail;
         toggleSides(up, side, back, down);
     }
-    private Vector3 railSnap(float x, float y, float z)
+    private Vector3 railSnap(Vector3 vect)
     {
         float BrX = isOnTopRail ? TopRail.position.x : BottomRail.transform.position.x;
         float BrY = isOnTopRail ? TopRail.transform.position.y : BottomRail.transform.position.y;
-        return new Vector3(BrX+x, BrY+y, z);
+        return new Vector3(BrX+ vect.x, BrY+ vect.y, vect.z);
     }
     public void toggleSides(bool up, bool side, bool back, bool down)
     {
-        isOnTopside = up; isOnFrontside = side; isOnUnderside = down; isOnBackside = back;
+        isOnTopside = up; isOnFrontside = side; isOnUnderside = down; isOnBackside = back; spinAxis = new Vector3(0,0,0);
+        playerbody.constraints = RigidbodyConstraints.None;
         // physics for if on top side
         if (isOnTopside) {
             Physics.gravity = new Vector3(0, -1 * physicsForce, 0);
-            playerbody.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
-            player.transform.position = railSnap(0f, 1f, 0f);
-            
+            playerbody.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationZ |RigidbodyConstraints.FreezeRotationY;
+            player.transform.position = railSnap(Vector3.up); 
+            spinAxis = Vector3.right;
         }
         // physics for if on front side
         if (isOnFrontside) {
             Physics.gravity = new Vector3(-1 * physicsForce, 0, 0);
-            playerbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
-            player.transform.position = railSnap(1f, 0f, 0f);
-        }// physics for if on back side
+            playerbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationZ |RigidbodyConstraints.FreezeRotationX;
+            player.transform.position = railSnap(Vector3.right);
+            spinAxis = Vector3.down;
+        }
+        // physics for if on back side
         if (isOnBackside) {
             Physics.gravity = new Vector3(physicsForce, 0, 0);
-            playerbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
-            player.transform.position = railSnap(-1f, 0f, 0f);
+            playerbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX;
+            player.transform.position = railSnap(Vector3.left);
+            spinAxis = Vector3.up;
         }
         // physics for if on underside
         if (isOnUnderside) {
             Physics.gravity = new Vector3(0, physicsForce, 0);
-            playerbody.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
-            player.transform.position = railSnap(0f, -1f, 0f);
+            playerbody.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationZ |RigidbodyConstraints.FreezeRotationY;
+            player.transform.position = railSnap(Vector3.down);
+            spinAxis = Vector3.left;
         }
     }
     private Vector3 spawnPointShuffle(Transform rail)
@@ -81,7 +100,6 @@ public class GameManager : MonoBehaviour
         }
         return new Vector3(x, y, z);
     }
-
     IEnumerator SpawnBarriers()
     {
         while (true)
@@ -89,10 +107,10 @@ public class GameManager : MonoBehaviour
             float waitTime = UnityEngine.Random.Range(0.2f, 1f);
             yield return new WaitForSeconds(waitTime);
             Quaternion rotation = isTwisted ? Quaternion.identity : Quaternion.AngleAxis(45, Vector3.back);
-            Instantiate(barrier, spawnPointShuffle(BottomRail), rotation);
+            barrierRespawn.RespawnObjects(spawnPointShuffle(BottomRail), rotation);
             yield return new WaitForSeconds(waitTime);
             rotation = isTwisted ? Quaternion.identity : Quaternion.AngleAxis(45, Vector3.back);
-            Instantiate(barrier, spawnPointShuffle(TopRail), rotation);
+            barrierRespawn.RespawnObjects(spawnPointShuffle(TopRail), rotation);
         }
     }
     
