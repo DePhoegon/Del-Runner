@@ -1,0 +1,35 @@
+Added
+- Clounds
+- Variable Speed Control
+- Max Speed
+-- Prevents run away speeds
+- Cloud material
+- Prefab filter for multi object 'things'
+-- allows for destruction at the same plane the respawn point would be
+-- prevents multiple objects of the same 'overall' thing from spawning multiple versions of the thing.
+---- Useful for when the main shape isn't the outershape as a whole.
+- Cloud tags
+- Cleanup Tag / no respawn tag
+- getting inital speed of prefabs before anychanges
+-- prevents run away setting of numbers by mistake
+
+
+Changed
+- MandualResetObject Script
+-- split Shifting amount into XYZ to allow custom limits (going positive)
+-- Split Respawn into helper function to call the correct respawnObjects (with/without speed)
+-- Added Spawn on same X
+--- Unuseded
+- Object Mover Script
+-- Speed to rely on Int inputs
+-- SPeed Variance for objects (option)
+-- max speed setable
+--- max speed auto sets to current if 0
+
+Possible ToDos
+- shuffle the cloud shapes around
+
+-------
+
+Discoveries for later
+- Flying ships zoombing by ~300-2000 (int) speed

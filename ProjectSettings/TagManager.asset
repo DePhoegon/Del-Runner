@@ -12,6 +12,9 @@ TagManager:
   - building
   - trees
   - dirt
+  - left cloud
+  - right cloud
+  - multi-clean
   layers:
   - Default
   - TransparentFX
